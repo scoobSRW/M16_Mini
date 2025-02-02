@@ -8,13 +8,14 @@ from config import Config  # Adjust this to your actual config module
 # Load environment variables from the .env file
 load_dotenv()
 
-
 def create_app():
     """Create and configure the Flask app."""
     app = Flask(__name__)
     app.config.from_object(Config)
     return app
 
+# Create the Flask app at module level for Gunicorn
+app = create_app()
 
 def check_database_connection():
     """Check database connection and print results."""
@@ -29,11 +30,10 @@ def check_database_connection():
         print(f"Error: {e}")
         print("Database connection failed.")
 
-
 def run_tests():
     """Run unit tests."""
     loader = unittest.TestLoader()
-    suite = loader.discover(start_dir='tests', pattern='test_*.py')  # Adjust the pattern if necessary
+    suite = loader.discover(start_dir='tests', pattern='test_*.py')
     runner = unittest.TextTestRunner()
     result = runner.run(suite)
     if result.wasSuccessful():
@@ -41,13 +41,13 @@ def run_tests():
     else:
         print(f"Some tests failed. {len(result.failures)} failures.")
 
-
 if __name__ == "__main__":
-    # Create the Flask app and check the database connection
-    app = create_app()
+    # When running locally for development
     print("Checking database connection...")
     check_database_connection()
 
-    # Optionally, run the tests
     print("Running tests...")
     run_tests()
+
+    # Run the development server
+    app.run(debug=True)
