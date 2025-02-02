@@ -3,48 +3,25 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # This can be any branch you want to trigger the pipeline on (e.g., 'main', 'develop', etc.)
+      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  # Job 1: Set up environment and check connection
-  setup_and_check:
+  build:
     runs-on: ubuntu-latest
+    env:
+      POSTGRESQL_USR: ${{ secrets.POSTGRESQL_USR }}
+      POSTGRESQL_PSW: ${{ secrets.POSTGRESQL_PSW }}
+      POSTGRESQL_DB: ${{ secrets.POSTGRESQL_DB }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  # Update to your Python version
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Load environment variables
-        run: |
-          echo "POSTGRESQL_USR=${{ secrets.POSTGRESQL_USR }}" >> $GITHUB_ENV
-          echo "POSTGRESQL_PSW=${{ secrets.POSTGRESQL_PSW }}" >> $GITHUB_ENV
-          echo "POSTGRESQL_DB=${{ secrets.POSTGRESQL_DB }}" >> $GITHUB_ENV
-
-      - name: Check database connection
-        run: |
-          python run.py  # This will run the connection check in your run.py script
-
-  # Job 2: Run unit tests
-  run_tests:
-    needs: setup_and_check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python environment
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
@@ -54,31 +31,17 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run unit tests
+      - name: Run Tests
         run: |
           python -m unittest discover tests/
 
-  # Job 3: Deploy (if tests pass)
-  deploy:
-    needs: run_tests
-    runs-on: ubuntu-latest
-    if: success()  # Only runs this job if the previous job succeeded
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
+      - name: Run database migration (if necessary)
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          # Include your migration commands here if necessary, like:
+          # flask db upgrade or python manage.py migrate
+          echo "Running database migration"
 
-      - name: Deploy to production
+      - name: Deploy to production (optional)
         run: |
-          # Here, add your deployment script or commands to deploy to your hosting environment (e.g., Heroku, AWS, etc.)
-          echo "Deploying application..."
+          # Your deployment commands go here (e.g., pushing to server, AWS, etc.)
+          echo "Deploying to production"
