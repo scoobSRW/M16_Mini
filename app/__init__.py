@@ -28,7 +28,9 @@ def create_app(config_class):
     from app.blueprints.products.routes import products_bp
     from app.blueprints.swagger import swagger_blueprint
     from app.blueprints.users.routes import users_bp
+    from app.blueprints.main import main_bp
 
+    app.register_blueprint(main_bp)
     app.register_blueprint(employees_bp, url_prefix="/api/employees")
     app.register_blueprint(products_bp, url_prefix="/api/products")
     app.register_blueprint(orders_bp, url_prefix="/api/orders")
