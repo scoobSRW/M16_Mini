@@ -1,6 +1,3 @@
-
-Here's a template README for your project:
-
 M16_Mini Flask Application
 This project is a Flask-based web application designed to interact with a PostgreSQL database and run basic unit tests. It is deployed using Gunicorn on Render for production. This README will guide you through setting up and deploying the app.
 
