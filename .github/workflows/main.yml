@@ -16,8 +16,7 @@ jobs:
       POSTGRESQL_PSW: ${{ secrets.POSTGRESQL_PSW }}
       POSTGRESQL_DB: ${{ secrets.POSTGRESQL_DB }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}  # Add Render API Key to secrets
-      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}  # Add Render Service ID to secrets
+      RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}  # Use deploy hook URL
 
     steps:
       - name: Checkout code
@@ -39,14 +38,11 @@ jobs:
 
       - name: Run database migration (if necessary)
         run: |
-          # Include your migration commands here if necessary, like:
+          # Include your migration commands here, e.g.:
           # flask db upgrade or python manage.py migrate
           echo "Running database migration"
 
       - name: Deploy to Render
         if: success()  # Only deploy if tests pass
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            -d "service_id=$RENDER_SERVICE_ID" \
-            https://api.render.com/v1/services/deploy
+          curl -X POST "$RENDER_DEPLOY_HOOK"
