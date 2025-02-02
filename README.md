@@ -1,106 +1,102 @@
-M16_Mini Flask Application
+# M16_Mini Flask Application
 
 This project is a Flask-based web application designed to interact with a PostgreSQL database and run basic unit tests. It is deployed using Gunicorn on Render for production. This README will guide you through setting up and deploying the app.
 
+## Table of Contents
 
-Table of Contents
-Installation
-Configuration
-Running the App Locally
-Testing
-Deployment
-Troubleshooting
-Contributing
-License
-Installation
-Prerequisites
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Running the App Locally](#running-the-app-locally)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation
+
+### Prerequisites
 Before you begin, ensure you have the following installed:
 
-Python 3.11 or above
-pip for managing Python packages
-PostgreSQL (if running locally)
-git (optional, for cloning the repository)
-Step 1: Clone the Repository
+- Python 3.11 or above
+- `pip` for managing Python packages
+- PostgreSQL (if running locally)
+- `git` (optional, for cloning the repository)
+
+### Step 1: Clone the Repository
 Clone this repository to your local machine using the following command:
 
-bash
-Copy
-Edit
 git clone https://github.com/scoobSRW/M16_Mini.git
 cd M16_Mini
-Step 2: Install Dependencies
+
+### Step 2: Install Dependencies
 Create a virtual environment and install the required dependencies:
 
-bash
-Copy
-Edit
 python3 -m venv .venv
 source .venv/bin/activate  # For Linux/macOS
 .venv\Scripts\activate     # For Windows
 pip install -r requirements.txt
-Step 3: Setup Environment Variables
-Make sure to create a .env file in the project root and add your environment variables, such as your database URI and any API keys:
 
-bash
-Copy
-Edit
+### Step 3: Setup Environment Variables
+Make sure to create a `.env` file in the project root and add your environment variables, such as your database URI and any API keys:
+
 # Example .env
 SQLALCHEMY_DATABASE_URI=postgresql://user:password@localhost/dbname
-Configuration
-This project uses a Config class in the config.py file to manage configurations such as the database URI and secret keys. You can modify this file to adjust settings for development, testing, or production.
 
-python
-Copy
-Edit
+## Configuration
+This project uses a `Config` class in the `config.py` file to manage configurations such as the database URI and secret keys. You can modify this file to adjust settings for development, testing, or production.
+
 class Config:
     SQLALCHEMY_DATABASE_URI = 'postgresql://user:password@localhost/dbname'
     SECRET_KEY = 'your-secret-key'
-Running the App Locally
+
+## Running the App Locally
 To run the application locally in development mode, use the following command:
 
-bash
-Copy
-Edit
 python run.py
-This will start the Flask development server. You can access the application at http://127.0.0.1:5000.
 
-Testing
-This project includes unit tests that can be run using the unittest framework.
+This will start the Flask development server. You can access the application at `http://127.0.0.1:5000`.
+
+## Testing
+This project includes unit tests that can be run using the `unittest` framework.
 
 To run the tests, use the following command:
 
-bash
-Copy
-Edit
 python run.py
-This will run the tests in the tests directory and print the results to the console.
 
-Deployment
-Deployment on Render
-Push your repository to GitHub if it’s not already.
-Go to Render and create a new web service.
-Connect your GitHub repository and choose the correct branch.
-Set the build and start commands:
-Build Command: pip install -r requirements.txt
-Start Command: gunicorn run:app
-Set any environment variables required for the app, such as the SQLALCHEMY_DATABASE_URI.
-Click "Deploy" to deploy the app.
-Once the app is deployed, it will be accessible via the provided Render URL.
+This will execute the unit tests and print the results to the terminal.
 
-Troubleshooting
-If you encounter issues, here are a few things to check:
+## Deployment
 
-Database Connection: Ensure that your database URI is correctly set and that the database is accessible.
-Error Logs: Review the logs for more detailed error messages. If using Render, you can check the logs on the Render dashboard.
-Gunicorn: If Gunicorn isn’t starting the app properly, ensure that the start command in your Render configuration points to the correct app instance (e.g., run:app).
-Contributing
-Contributions are welcome! Please fork this repository, create a branch for your changes, and submit a pull request.
+### Step 1: Prepare the App for Deployment
+Ensure that the app is configured to use Gunicorn and is ready for deployment. The app should use the `run.py` file as the entry point for Gunicorn:
 
-How to Contribute
-Fork the repository.
-Create a new branch (git checkout -b feature-branch).
-Make your changes and commit them (git commit -am 'Add new feature').
-Push the changes to your fork (git push origin feature-branch).
-Open a pull request.
-License
+gunicorn run:app
+
+### Step 2: Deploy to Render
+1. Create a new web service on Render.
+2. Connect your GitHub repository containing this project.
+3. Set up the environment variables in the Render dashboard (e.g., `SQLALCHEMY_DATABASE_URI`, `SECRET_KEY`).
+4. Render will automatically detect the Flask app and deploy it.
+
+The app will be available at a Render-provided URL after deployment. You can access the live app from that URL.
+
+## Troubleshooting
+
+- **404 Error**: Ensure that the routes in your Flask application are defined correctly. If you see a 404 error, make sure the `run.py` file is set up with the correct `Flask` application.
+
+- **Database Connection Error**: If you're seeing database connection issues, check the `.env` file to ensure the `SQLALCHEMY_DATABASE_URI` is correct and accessible.
+
+- **Deployment Issues**: If the app isn't deploying correctly, check the logs on Render for any errors. Common issues include missing environment variables or incorrect configurations in `config.py`.
+
+## Contributing
+If you'd like to contribute to this project, feel free to submit a pull request. Please make sure to include tests for any new features or bug fixes.
+
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Implement your changes and commit them.
+4. Push the branch to your fork.
+5. Create a pull request with a clear explanation of your changes.
+
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
