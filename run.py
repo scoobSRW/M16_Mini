@@ -1,6 +1,6 @@
 import unittest
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from config import Config  # Adjust this to your actual config module
@@ -16,6 +16,10 @@ def create_app():
 
 # Create the Flask app at module level for Gunicorn
 app = create_app()
+
+@app.route('/')
+def index():
+    return jsonify({"message": "Welcome to the M16_Mini API!"})
 
 def check_database_connection():
     """Check database connection and print results."""
